@@ -1,0 +1,18 @@
+{
+    "slot1": {
+        "nombre": "jugador1",
+        "dia": 1,
+        "puntos": 0
+    },
+    "slot2": {
+        "nombre": "sofia",
+        "dia": 1,
+        "puntos": 0
+    },
+    "slot3": {
+        "nombre": "test",
+        "dia": 1,
+        "puntos": 0
+    },
+    "slot4": null
+}
