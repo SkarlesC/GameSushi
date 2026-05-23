@@ -3,47 +3,38 @@
 import pygame
 import sys
 import script
-from cliente import Cliente 
-
+from cliente import Cliente
+from style import styles as style
 
 # Configuración inicial
 pygame.init()
+style.init_fonts()
 ANCHO, ALTO = 800, 600
 pantalla = pygame.display.set_mode((ANCHO, ALTO))
 pygame.display.set_caption("Papa's Sushi")
 
-
-BLANCO = (255, 255, 255)
-NARANJA_PAPA = (255, 128, 0)
-fuente_titulo = pygame.font.SysFont("Arial", 60, bold=True)
-fuente_boton = pygame.font.SysFont("Arial", 30)
 boton_nuevo_rect = pygame.Rect(200, 200, 250, 50)
 boton_cargar_rect = pygame.Rect(200, 300, 250, 50)
 
 def dibujar_texto(texto, fuente, color, x, y):
-    img = fuente.render(texto, True, color)
-    pantalla.blit(img, (x, y))
+    style.draw_text(pantalla, texto, fuente, color, x, y)
 
 def menu_principal():
     reloj = pygame.time.Clock()
     
     while True:
-        pantalla.fill((200, 230, 255)) # Un azul cielo de fondo
+        pantalla.fill(style.SKY_BLUE)
         
         # Obtener posición del mouse
         mouse_pos = pygame.mouse.get_pos()
         
         # Título del Juego
-        dibujar_texto("PAPA'S SUSHI", fuente_titulo, (50, 50, 50), 180, 150)
+        dibujar_texto("PAPA'S SUSHI", style.FONT_TITLE, style.TEXT_DARK, 180, 150)
         
         # Botón "PLAY"
         boton_rect = pygame.Rect(300, 350, 200, 60)
         
-        # Efecto "hover" (si el mouse está encima, cambia de color)
-        color_boton = (200, 100, 0) if boton_rect.collidepoint(mouse_pos) else NARANJA_PAPA
-        
-        pygame.draw.rect(pantalla, color_boton, boton_rect, border_radius=17)
-        dibujar_texto("START GAME", fuente_boton, BLANCO, 320, 365)
+        style.draw_button(pantalla, "START GAME", boton_rect, style.SUSHI_ORANGE, style.SUSHI_ORANGE_HOVER, mouse_pos)
 
         # Manejo de eventos
         for evento in pygame.event.get():
@@ -53,8 +44,6 @@ def menu_principal():
             
             if evento.type == pygame.MOUSEBUTTONDOWN:
                 if boton_rect.collidepoint(mouse_pos):
-                    # Aquí es donde llamarías a la función de la cocina o selección de personaje
-                    # print("Cargando juego...")
                     iniciar_juego()
 
         pygame.display.update()
@@ -64,11 +53,11 @@ def iniciar_juego():
     corriendo = True
     while corriendo:
         mouse_pos = pygame.mouse.get_pos()
-        pantalla.fill((255, 255, 255))
+        pantalla.fill(style.WHITE)
         
         # Dibujamos los botones
-        dibujar_boton(pantalla, "NUEVA PARTIDA", boton_nuevo_rect, (50, 150, 50), (70, 200, 70), mouse_pos)
-        dibujar_boton(pantalla, "CARGAR PARTIDA", boton_cargar_rect, (50, 50, 150), (70, 70, 200), mouse_pos)
+        style.draw_button(pantalla, "NUEVA PARTIDA", boton_nuevo_rect, style.BUTTON_GREEN, style.BUTTON_GREEN_HOVER, mouse_pos)
+        style.draw_button(pantalla, "CARGAR PARTIDA", boton_cargar_rect, style.BUTTON_GREEN, style.BUTTON_GREEN_HOVER, mouse_pos)
         
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
@@ -132,13 +121,13 @@ def iniciar_juego():
 def pedir_valor_en_pantalla(titulo):
     username = ""
     escribiendo = True
-    fuente = pygame.font.Font(None, 40)
+    fuente = style.FONT_INPUT
     
     while escribiendo:
-        pantalla.fill((255, 255, 255)) # Fondo blanco
+        pantalla.fill(style.WHITE) # Fondo blanco
         
         # Dibujar las instrucciones y lo que el usuario va escribiendo
-        txt_titulo = fuente.render(titulo, True, (0, 0, 0))
+        txt_titulo = fuente.render(titulo, True, style.BLACK)
         txt_username = fuente.render(username + "|", True, (0, 0, 255)) # Azul para el username
         
         pantalla.blit(txt_titulo, (100, 150))
@@ -163,10 +152,10 @@ def pedir_valor_en_pantalla(titulo):
     
     return username if username != "" else "Cocinero"
 
-def mostrar_mensaje(pantalla, texto, color=(0, 0, 0)):
+def mostrar_mensaje(pantalla, texto, color=style.BLACK):
     """Función auxiliar para dibujar texto centrado rápidamente"""
     fuente = pygame.font.Font(None, 36)
-    pantalla.fill((255, 255, 255))  # Limpia la pantalla (puedes usar una imagen de fondo)
+    pantalla.fill(style.WHITE)  # Limpia la pantalla (puedes usar una imagen de fondo)
     
     superficie_texto = fuente.render(texto, True, color)
     rect_texto = superficie_texto.get_rect(center=(pantalla.get_width() // 2, pantalla.get_height() // 2))
@@ -175,24 +164,11 @@ def mostrar_mensaje(pantalla, texto, color=(0, 0, 0)):
     pygame.display.flip()
     pygame.time.delay(2000) # Pausa de 2 segundos para que el usuario lea
 
-def dibujar_boton(pantalla, texto, rect, color_reposo, color_hover, mouse_pos):
-    # Cambia de color si el mouse está encima
-    color = color_hover if rect.collidepoint(mouse_pos) else color_reposo
-    
-    # Dibujar el rectángulo del botón
-    pygame.draw.rect(pantalla, color, rect, border_radius=12)
-    pygame.draw.rect(pantalla, (0, 0, 0), rect, 2, border_radius=12) # Borde negro
-    
-    # Renderizar y centrar el texto
-    txt_surface = fuente_boton.render(texto, True, (255, 255, 255))
-    txt_rect = txt_surface.get_rect(center=rect.center)
-    pantalla.blit(txt_surface, txt_rect)
-
 def bucle_restaurante():
     
     reloj = pygame.time.Clock()
-    fuente_juego = pygame.font.SysFont("Arial", 18)
-    fuente_dinamica = pygame.font.SysFont(["Segoe UI", "Helvetica", "Arial"], 18)
+    fuente_juego = style.FONT_GAME
+    fuente_dinamica = style.FONT_DYNAMIC
    
     cola_clientes = []
 
@@ -209,9 +185,8 @@ def bucle_restaurante():
     ANCHO_PANEL = 320
     ALTO_PANEL = 280
     
-    # NUEVAS NUEVAS MEDIDAS PARA LA TARJETA (¡Ahora más anchas!)
+    # MEDIDAS PARA LA TARJETA
     ANCHO_TARJETA = 380 
-    ANCHO_MAX_TEXTO_TARJETA = ANCHO_TARJETA - 24 # Margen interno de 12px a cada lado
     
     X_BOTON_VOLVER = 20
     Y_BOTON_VOLVER = 20
@@ -233,13 +208,12 @@ def bucle_restaurante():
         dibujar_texto("Presiona [C] para un Cliente | Arrastra los pedidos con el Ratón", fuente_juego, (50, 50, 50), 380, 20)
 
         pygame.draw.rect(pantalla, color_amarillo_oscuro, (X_BOTON_VOLVER, Y_BOTON_VOLVER, ANCHO_BOTON_VOLVER, ALTO_BOTON_VOLVER), border_radius=17)
-        # Dibujamos el borde del botón
         pygame.draw.rect(pantalla, color_borde, (X_BOTON_VOLVER, Y_BOTON_VOLVER, ANCHO_BOTON_VOLVER, ALTO_BOTON_VOLVER), width=2, border_radius=17)
     
         texto_volver = fuente_juego.render("VOLVER AL MENÚ", True, (0, 0, 0))
         pantalla.blit(texto_volver, (X_BOTON_VOLVER + 15, Y_BOTON_VOLVER + 7))
         
-        # PANEL CONTENEDOR DE PEDIDOS (Fondo de la zona inicial)
+        # PANEL CONTENEDOR DE PEDIDOS
         pygame.draw.rect(pantalla, (255, 255, 240), (X_PANEL, Y_PANEL, ANCHO_PANEL, ALTO_PANEL))
         pygame.draw.rect(pantalla, (180, 180, 180), (X_PANEL, Y_PANEL, ANCHO_PANEL, ALTO_PANEL), 3)
         
@@ -254,82 +228,75 @@ def bucle_restaurante():
             tarjeta_seleccionada.tarjeta_x = pos_raton[0] - offset_x
             tarjeta_seleccionada.tarjeta_y = pos_raton[1] - offset_y
         
-        # === DIBUJAR TARJETAS EN ORDEN CRONOLÓGICO (Una debajo de otra) ===
-        # Iteramos de forma normal (0, 1, 2...) para mantener el orden secuencial estricto
+        # === DIBUJAR TARJETAS EN ORDEN CRONOLÓGICO ===
         for idx_real, cliente in enumerate(cola_clientes):
-            
-        #     # Si el cliente está siendo arrastrado, saltamos su renderizado temporalmente
-        #     # para dibujarlo al final (así siempre quedará por encima de las demás tarjetas)
-
             if cliente == tarjeta_seleccionada:
                 continue
                 
-            # ➔ 1. SEPARAR EL TEXTO DEL PEDIDO EN LÍNEAS
-            texto_pedido_completo = f"Pedido: {cliente.pedido}"
-            palabras = texto_pedido_completo.split(' ')
+            # ➔ 1. PROCESAR EL PEDIDO DESDE EL DICCIONARIO
+            # Convertimos el diccionario en líneas legibles estilo factura (ej: "1x Arroz" o solo "Arroz")
             lineas_pedido = []
-            linea_actual = ""
-            
-            for palabra in palabras:
-                test_linea = linea_actual + palabra + " "
-                if fuente_dinamica.size(test_linea)[0] < ANCHO_MAX_TEXTO_TARJETA:
-                    linea_actual = test_linea
-                else:
-                    lineas_pedido.append(linea_actual.strip())
-                    linea_actual = palabra + " "
-            lineas_pedido.append(linea_actual.strip())
+            if isinstance(cliente.pedido, dict):
+                for ingrediente, cantidad in cliente.pedido.items():
+                    lineas_pedido.append(f"{cantidad}x {ingrediente}")
+            else:
+                # Por si acaso algún cliente viejo aún tiene formato string
+                lineas_pedido = [str(cliente.pedido)]
             
             # ➔ 2. CALCULAR EL ALTO DE LA TARJETA
-            total_lineas = 1 + len(lineas_pedido)
-            alto_t = (fuente_dinamica.get_linesize() * total_lineas) + 12
+            total_lineas = 2 + len(lineas_pedido)
+            alto_t = (fuente_dinamica.get_linesize() * total_lineas) + 20
             
-            # Fondo blanco puro del papel
+            # Fondo blanco del ticket
             pygame.draw.rect(pantalla, (255, 255, 255), (cliente.tarjeta_x, cliente.tarjeta_y, ANCHO_TARJETA, alto_t))
-            
-            # Borde del papel (Gris normal)
             pygame.draw.rect(pantalla, (210, 210, 210), (cliente.tarjeta_x, cliente.tarjeta_y, ANCHO_TARJETA, alto_t), 1)
             
-            # ➔ 3. ESTAMPAR EL NOMBRE
-            texto_nombre = f"{idx_real + 1}. {cliente.nombre}"
-            render_nombre = fuente_dinamica.render(texto_nombre, True, (40, 40, 40))
-            pantalla.blit(render_nombre, (cliente.tarjeta_x + 12, cliente.tarjeta_y + 6))
+            # Línea punteada decorativa superior
+            pygame.draw.line(pantalla, (180, 180, 180), (cliente.tarjeta_x + 10, cliente.tarjeta_y + 30), (cliente.tarjeta_x + ANCHO_TARJETA - 10, cliente.tarjeta_y + 30), 1)
             
-            # ➔ 4. ESTAMPAR LAS LÍNEAS DEL PEDIDO
-            y_renglon = cliente.tarjeta_y + 6 + fuente_dinamica.get_linesize()
+            # ➔ 3. ESTAMPAR EL NOMBRE / ID DEL TICKET
+            texto_nombre = f"TICKET #{idx_real + 1} - {cliente.nombre.upper()}"
+            render_nombre = fuente_dinamica.render(texto_nombre, True, (0, 0, 0))
+            pantalla.blit(render_nombre, (cliente.tarjeta_x + 12, cliente.tarjeta_y + 8))
+            
+            # Encabezado del detalle
+            render_detalle = fuente_dinamica.render("DETALLE DEL PEDIDO:", True, (120, 120, 120))
+            pantalla.blit(render_detalle, (cliente.tarjeta_x + 12, cliente.tarjeta_y + 38))
+            
+            # ➔ 4. ESTAMPAR CADA ELEMENTO DEL DICCIONARIO ABAJO DEL ANTERIOR
+            y_renglon = cliente.tarjeta_y + 38 + fuente_dinamica.get_linesize()
             for linea in lineas_pedido:
-                render_pedido = fuente_dinamica.render(linea, True, (90, 90, 90))
+                render_pedido = fuente_dinamica.render(f"  • {linea}", True, (50, 50, 50))
                 pantalla.blit(render_pedido, (cliente.tarjeta_x + 12, y_renglon))
                 y_renglon += fuente_dinamica.get_linesize()
 
-        # ➔ 4B. DIBUJAR LA TARJETA SELECCIONADA POR ENCIMA DE TODO
+        # ➔ 4B. DIBUJAR LA TARJETA SELECCIONADA POR ENCIMA DE TODO (ARRASTRÁNDOSE)
         if tarjeta_seleccionada is not None:
-            texto_pedido_completo = f"Pedido: {tarjeta_seleccionada.pedido}"
-            palabras = texto_pedido_completo.split(' ')
             lineas_pedido = []
-            linea_actual = ""
+            if isinstance(tarjeta_seleccionada.pedido, dict):
+                for ingrediente, cantidad in tarjeta_seleccionada.pedido.items():
+                    lineas_pedido.append(f"{cantidad}x {ingrediente}")
+            else:
+                lineas_pedido = [str(tarjeta_seleccionada.pedido)]
             
-            for palabra in palabras:
-                test_linea = linea_actual + palabra + " "
-                if fuente_dinamica.size(test_linea)[0] < ANCHO_MAX_TEXTO_TARJETA:
-                    linea_actual = test_linea
-                else:
-                    lineas_pedido.append(linea_actual.strip())
-                    linea_actual = palabra + " "
-            lineas_pedido.append(linea_actual.strip())
-            
-            total_lineas = 1 + len(lineas_pedido)
-            alto_t = (fuente_dinamica.get_linesize() * total_lineas) + 12
+            total_lineas = 2 + len(lineas_pedido)
+            alto_t = (fuente_dinamica.get_linesize() * total_lineas) + 20
             
             pygame.draw.rect(pantalla, (255, 255, 255), (tarjeta_seleccionada.tarjeta_x, tarjeta_seleccionada.tarjeta_y, ANCHO_TARJETA, alto_t))
-            pygame.draw.rect(pantalla, (150, 150, 250), (tarjeta_seleccionada.tarjeta_x, tarjeta_seleccionada.tarjeta_y, ANCHO_TARJETA, alto_t), 2)
+            pygame.draw.rect(pantalla, (100, 149, 237), (tarjeta_seleccionada.tarjeta_x, tarjeta_seleccionada.tarjeta_y, ANCHO_TARJETA, alto_t), 2)
             
-            texto_nombre = f"{cola_clientes.index(tarjeta_seleccionada) + 1}. {tarjeta_seleccionada.nombre}"
-            render_nombre = fuente_dinamica.render(texto_nombre, True, (40, 40, 40))
-            pantalla.blit(render_nombre, (tarjeta_seleccionada.tarjeta_x + 12, tarjeta_seleccionada.tarjeta_y + 6))
+            pygame.draw.line(pantalla, (100, 149, 237), (tarjeta_seleccionada.tarjeta_x + 10, tarjeta_seleccionada.tarjeta_y + 30), (tarjeta_seleccionada.tarjeta_x + ANCHO_TARJETA - 10, tarjeta_seleccionada.tarjeta_y + 30), 1)
             
-            y_renglon = tarjeta_seleccionada.tarjeta_y + 6 + fuente_dinamica.get_linesize()
+            texto_nombre = f"TICKET #{cola_clientes.index(tarjeta_seleccionada) + 1} - {tarjeta_seleccionada.nombre.upper()}"
+            render_nombre = fuente_dinamica.render(texto_nombre, True, (0, 0, 0))
+            pantalla.blit(render_nombre, (tarjeta_seleccionada.tarjeta_x + 12, tarjeta_seleccionada.tarjeta_y + 8))
+            
+            render_detalle = fuente_dinamica.render("DETALLE DEL PEDIDO:", True, (120, 120, 120))
+            pantalla.blit(render_detalle, (tarjeta_seleccionada.tarjeta_x + 12, tarjeta_seleccionada.tarjeta_y + 38))
+            
+            y_renglon = tarjeta_seleccionada.tarjeta_y + 38 + fuente_dinamica.get_linesize()
             for linea in lineas_pedido:
-                render_pedido = fuente_dinamica.render(linea, True, (90, 90, 90))
+                render_pedido = fuente_dinamica.render(f"  • {linea}", True, (50, 50, 50))
                 pantalla.blit(render_pedido, (tarjeta_seleccionada.tarjeta_x + 12, y_renglon))
                 y_renglon += fuente_dinamica.get_linesize()
                 
@@ -341,26 +308,18 @@ def bucle_restaurante():
                 
             if evento.type == pygame.MOUSEBUTTONDOWN:
                 if evento.button == 1:
-
                     rect_boton_volver = pygame.Rect(X_BOTON_VOLVER, Y_BOTON_VOLVER, ANCHO_BOTON_VOLVER, ALTO_BOTON_VOLVER)
                     if rect_boton_volver.collidepoint(pos_raton):
-                        jugando = False  # Rompe el bucle while y permite regresar al menú
+                        jugando = False
                         continue
 
-                    # Buscamos de adelante hacia atrás para agarrar la tarjeta que esté más arriba en pantalla
                     for cliente in cola_clientes:
-                        texto_p = f"Pedido: {cliente.pedido}"
-                        palabras = texto_p.split(' ')
-                        lineas_count = 1
-                        l_act = ""
-                        for p in palabras:
-                            if fuente_dinamica.size(l_act + p + " ")[0] < ANCHO_MAX_TEXTO_TARJETA:
-                                l_act += p + " "
-                            else:
-                                lineas_count += 1
-                                l_act = p + " "
+                        if isinstance(cliente.pedido, dict):
+                            lineas_count = len(cliente.pedido)
+                        else:
+                            lineas_count = 1
                         
-                        alto_t = (fuente_dinamica.get_linesize() * (1 + lineas_count)) + 12
+                        alto_t = (fuente_dinamica.get_linesize() * (2 + lineas_count)) + 20
                         rect_tarjeta = pygame.Rect(cliente.tarjeta_x, cliente.tarjeta_y, ANCHO_TARJETA, alto_t)
                         
                         if rect_tarjeta.collidepoint(pos_raton):
@@ -379,22 +338,15 @@ def bucle_restaurante():
                     posicion_en_cola = len(cola_clientes)
                     nuevo_cliente.posicion_destino = X_MOSTRADOR + (posicion_en_cola * DISTANCIA_ENTRE_CLIENTES)
                     
-                    # ➔ 5. CÁLCULO DINÁMICO DE POSICIÓN VERTICAL INICIAL (Evita que se pisen)
-                    # Calculamos cuánto espacio ocupan las tarjetas que ya están en la lista
+                    # ➔ 5. CÁLCULO DINÁMICO DE POSICIÓN VERTICAL INICIAL PARA DICCIONARIOS
                     y_acumulado = Y_PANEL + 45
                     for c_existente in cola_clientes:
-                        texto_p = f"Pedido: {c_existente.pedido}"
-                        palabras = texto_p.split(' ')
-                        lineas_count = 1
-                        l_act = ""
-                        for p in palabras:
-                            if fuente_dinamica.size(l_act + p + " ")[0] < ANCHO_MAX_TEXTO_TARJETA:
-                                l_act += p + " "
-                            else:
-                                lineas_count += 1
-                                l_act = p + " "
-                        alto_t = (fuente_dinamica.get_linesize() * (1 + lineas_count)) + 12
-                        y_acumulado += alto_t + 10 # 10px de separación entre tarjetas
+                        if isinstance(c_existente.pedido, dict):
+                            lineas_count = len(c_existente.pedido)
+                        else:
+                            lineas_count = 1
+                        alto_t = (fuente_dinamica.get_linesize() * (2 + lineas_count)) + 20
+                        y_acumulado += alto_t + 12 
                     
                     nuevo_cliente.tarjeta_x = X_PANEL + 10
                     nuevo_cliente.tarjeta_y = y_acumulado
