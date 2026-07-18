@@ -20,6 +20,19 @@ TICKET_LINE = (180, 180, 180)
 CARD_HIGHLIGHT = (100, 149, 237)
 TEXT_SECONDARY = (120, 120, 120)
 TEXT_DARK = (50, 50, 50)
+BUTTON_BLUE = (15, 32, 67)
+BUTTON_BLUE_HOVER = (28, 59, 122)
+
+# Colores para linea de pedidos y tickets
+LINE_CABLE = (120, 100, 80)
+LINE_SUPPORT = (80, 60, 40)
+TICKET_CREAM = (255, 253, 230)
+TICKET_BORDER = (180, 160, 100)
+TICKET_SHADOW = (0, 0, 0, 35)
+BACKGROUND_WARM = (245, 240, 235)
+COUNTER_DARK = (100, 50, 10)
+PANEL_DARK_BG = (30, 30, 45)
+PANEL_HEADER_BG = (45, 45, 65)
 
 # Fuentes definidas después de inicializar pygame
 FONT_TITLE = None
@@ -43,8 +56,8 @@ def draw_text(screen, text, font, color, x, y):
     screen.blit(surface, (x, y))
 
 
-def draw_button(screen, text, rect, color_default, color_hover, mouse_pos):
-    color = color_hover if rect.collidepoint(mouse_pos) else color_default
+def draw_button(screen, text, rect, color_base, color_hover, mouse_pos):
+    color = color_hover if rect.collidepoint(mouse_pos) else color_base
     pygame.draw.rect(screen, color, rect, border_radius=12)
     pygame.draw.rect(screen, BLACK, rect, 2, border_radius=12)
 

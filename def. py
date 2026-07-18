@@ -1,0 +1,225 @@
+
+
+
+
+
+
+
+
+# def bucle_restaurante():
+
+#     reloj = pygame.time.Clock()
+#     fuente_juego = style.FONT_GAME
+#     fuente_dinamica = style.FONT_DYNAMIC
+
+#     cola_clientes = []
+#     X_MOSTRADOR = 150
+#     DISTANCIA_ENTRE_CLIENTES = 70
+
+#     tarjeta_seleccionada = None  
+#     offset_x = 0                
+#     offset_y = 0                
+    
+#     # Panel contenedor de tickets
+#     X_PANEL = 450
+#     Y_PANEL = 50
+#     ANCHO_PANEL = 320
+#     ALTO_PANEL = 280
+   
+     
+#     # Botón Volver
+#     ANCHO_TARJETA = 300
+
+#     X_BOTON_VOLVER = 20
+#     Y_BOTON_VOLVER = 20
+#     ANCHO_BOTON_VOLVER = 150
+#     ALTO_BOTON_VOLVER = 35
+    
+#     color_amarillo_oscuro = (180, 140, 10)
+#     color_borde = (60, 50, 5)
+
+#     estacion_actual = "RECEPCION" 
+#     ingredientes_sushi_actual = [] 
+#     bibida_actual = "Ninguna"
+
+#     ancho_btn_estacion = 175
+#     alto_btn_estacion = 45
+#     y_btn_estacion = 540
+    
+#     btn_recepcion_rect = pygame.Rect(20, y_btn_estacion, ancho_btn_estacion, alto_btn_estacion)
+#     btn_arroz_rect = pygame.Rect(215, y_btn_estacion, ancho_btn_estacion, alto_btn_estacion)
+#     btn_relleno_rect = pygame.Rect(410, y_btn_estacion, ancho_btn_estacion, alto_btn_estacion)
+#     btn_corte_rect = pygame.Rect(605, y_btn_estacion, ancho_btn_estacion, alto_btn_estacion)
+
+#     jugando = True
+#     while jugando:
+#         pantalla.fill((240, 240, 240))
+#         pos_raton = pygame.mouse.get_pos()
+        
+#         if estacion_actual == "RECEPCION":
+#             estacion_order.mostrar_order(pantalla, fuente_juego, cola_clientes)
+            
+#         elif estacion_actual == "ARROZ":
+#             estacion_cook.mostrar_cook(pantalla, fuente_juego)
+            
+#         elif estacion_actual == "RELLENO":
+#             estacion_build.mostrar_build(pantalla, fuente_juego)
+            
+#         elif estacion_actual == "CORTE":
+#             tiene_sushi = len(ingredientes_sushi_actual) > 0
+#             estacion_tea.mostrar_tea(pantalla, fuente_juego, fuente_dinamica, tiene_sushi)
+
+#         pygame.draw.rect(pantalla, (220, 220, 220), (30, 460, 740, 40), border_radius=5)
+#         texto_preparacion = f"esterilla: {' + '.join(ingredientes_sushi_actual) if ingredientes_sushi_actual else 'Vacía' } | Bebida: {bibida_actual}"
+#         dibujar_texto(texto_preparacion, fuente_juego, (30, 30, 30), 45, 470)
+
+#         pygame.draw.rect(pantalla, color_amarillo_oscuro, (X_BOTON_VOLVER, Y_BOTON_VOLVER, ANCHO_BOTON_VOLVER, ALTO_BOTON_VOLVER), border_radius=17)
+#         pygame.draw.rect(pantalla, color_borde, (X_BOTON_VOLVER, Y_BOTON_VOLVER, ANCHO_BOTON_VOLVER, ALTO_BOTON_VOLVER), width=2, border_radius=17)
+#         dibujar_texto("VOLVER AL MENÚ", fuente_juego, (0, 0, 0), X_BOTON_VOLVER + 15, Y_BOTON_VOLVER + 7)
+
+#         pygame.draw.rect(pantalla, (255, 255, 240), (X_PANEL, Y_PANEL, ANCHO_PANEL, ALTO_PANEL))
+#         pygame.draw.rect(pantalla, (180, 180, 180), (X_PANEL, Y_PANEL, ANCHO_PANEL, ALTO_PANEL), 3)
+#         dibujar_texto("PEDIDOS EN COLA", fuente_juego, (0, 0, 0), X_PANEL + 15, Y_PANEL + 12)
+
+#         if tarjeta_seleccionada is not None:
+#            tarjeta_seleccionada.tarjeta_x = pos_raton[0] - offset_x
+#            tarjeta_seleccionada.tarjeta_y = pos_raton[1] - offset_y
+
+#         for idx_real, cliente in enumerate(cola_clientes):
+#             if cliente == tarjeta_seleccionada:
+#                 continue
+#             total_lineas = 2 + len(cliente.pedido)
+#             alto_t = (fuente_dinamica.get_linesize() * total_lineas) + 20
+            
+#             pygame.draw.rect(pantalla, (255, 255, 255), (cliente.tarjeta_x, cliente.tarjeta_y, ANCHO_TARJETA, alto_t))
+#             pygame.draw.rect(pantalla, (210, 210, 210), (cliente.tarjeta_x, cliente.tarjeta_y, ANCHO_TARJETA, alto_t), 1)
+
+#             texto_nombre = f"TICKET #{idx_real + 1} - {cliente.nombre.upper()}"
+
+#             pantalla.blit(fuente_dinamica.render(texto_nombre, True, (0, 0, 0)), (cliente.tarjeta_x + 12, cliente.tarjeta_y + 8))
+
+#             y_renglon = cliente.tarjeta_y + 38 + fuente_dinamica.get_linesize()
+#             for ingrediente in cliente.pedido:
+#                 pantalla.blit(fuente_dinamica.render(f"  • {ingrediente}", True, (50, 50, 50)), (cliente.tarjeta_x + 12, y_renglon))
+#                 y_renglon += fuente_dinamica.get_linesize()
+
+#         if tarjeta_seleccionada is not None:
+#             total_lineas = 2 + len(tarjeta_seleccionada.pedido)
+#             alto_t = (fuente_dinamica.get_linesize() * total_lineas) + 20
+            
+#             pygame.draw.rect(pantalla, (255, 255, 255), (tarjeta_seleccionada.tarjeta_x, tarjeta_seleccionada.tarjeta_y, ANCHO_TARJETA, alto_t))
+#             pygame.draw.rect(pantalla, (100, 149, 237), (tarjeta_seleccionada.tarjeta_x, tarjeta_seleccionada.tarjeta_y, ANCHO_TARJETA, alto_t), 2)
+
+#             texto_nombre = f"TICKET #{cola_clientes.index(tarjeta_seleccionada) + 1} - {tarjeta_seleccionada.nombre.upper()}"
+#             pantalla.blit(fuente_dinamica.render(texto_nombre, True, (0, 0, 0)), (tarjeta_seleccionada.tarjeta_x + 12, tarjeta_seleccionada.tarjeta_y + 8))
+
+#         color_recepcion = style.BUTTON_GREEN if estacion_actual == "RECEPCION" else style.BUTTON_BLUE
+#         color_arroz     = style.BUTTON_GREEN if estacion_actual == "ARROZ" else style.BUTTON_BLUE
+#         color_relleno   = style.BUTTON_GREEN if estacion_actual == "RELLENO" else style.BUTTON_BLUE
+#         color_corte     = style.BUTTON_GREEN if estacion_actual == "CORTE" else style.BUTTON_BLUE
+
+#         style.draw_button(pantalla, "RECEPCIÓN", btn_recepcion_rect, color_recepcion, style.BUTTON_BLUE_HOVER, pos_raton)
+#         style.draw_button(pantalla, "EST. ARROZ", btn_arroz_rect, color_arroz, style.BUTTON_BLUE_HOVER, pos_raton)
+#         style.draw_button(pantalla, "EST. RELLENO", btn_relleno_rect, color_relleno, style.BUTTON_BLUE_HOVER, pos_raton)
+#         style.draw_button(pantalla, "EST. CORTE", btn_corte_rect, color_corte, style.BUTTON_BLUE_HOVER, pos_raton)
+
+#         for evento in pygame.event.get():
+#             if evento.type == pygame.QUIT:
+#                 pygame.quit()
+#                 sys.exit()
+                
+#             if evento.type == pygame.MOUSEBUTTONDOWN:
+#                 if evento.button == 1:
+#                     rect_boton_volver = pygame.Rect(X_BOTON_VOLVER, Y_BOTON_VOLVER, ANCHO_BOTON_VOLVER, ALTO_BOTON_VOLVER)
+#                     if rect_boton_volver.collidepoint(pos_raton):
+#                         jugando = False
+#                         continue
+
+#                     if btn_recepcion_rect.collidepoint(pos_raton):
+#                         estacion_actual = "RECEPCION"
+#                     elif btn_arroz_rect.collidepoint(pos_raton):
+#                         estacion_actual = "ARROZ"
+#                     elif btn_relleno_rect.collidepoint(pos_raton):
+#                         estacion_actual = "RELLENO"
+#                     elif btn_corte_rect.collidepoint(pos_raton):
+#                         estacion_actual = "CORTE"
+
+
+#             if estacion_actual == "ARROZ":
+#                         estacion_cook.gestionar_clic_cook(pos_raton, ingredientes_sushi_actual)
+                        
+#             elif estacion_actual == "RELLENO":
+#                         estacion_build.gestionar_clic_build(pos_raton, ingredientes_sushi_actual)
+                        
+#             elif estacion_actual == "CORTE":
+#                         # Modifica la variable bebida_actual usando la respuesta de la interfaz tea
+#                  bebida_actual = estacion_tea.gestionar_clic_tea(pos_raton, bebida_actual)
+
+
+#             for cliente in cola_clientes:
+#                  alto_t = (fuente_dinamica.get_linesize() * (2 + len(cliente.pedido))) + 20
+#                  rect_tarjeta = pygame.Rect(cliente.tarjeta_x, cliente.tarjeta_y, ANCHO_TARJETA, alto_t)      
+#                  if rect_tarjeta.collidepoint(pos_raton):
+#                      tarjeta_seleccionada = cliente
+#                      offset_x = pos_raton[0] - cliente.tarjeta_x
+#                      offset_y = pos_raton[1] - cliente.tarjeta_y
+#                      break
+                 
+#                  if evento.type == pygame.MOUSEBUTTONUP:
+#                     if evento.button == 1:
+#                         tarjeta_seleccionada = None
+
+#                  if evento.type == pygame.KEYDOWN:
+
+                      
+#                   if evento.key == pygame.K_c:
+#                     nuevo_cliente = Cliente(800, 300)
+#                     posicion_en_cola = len(cola_clientes)
+#                     nuevo_cliente.posicion_destino = X_MOSTRADOR + (posicion_en_cola * DISTANCIA_ENTRE_CLIENTES)
+
+                    
+#                     y_acumulado = Y_PANEL + 45
+#                     for c_existente in cola_clientes:
+#                         alto_t = (fuente_dinamica.get_linesize() * (2 + len(c_existente.pedido))) + 20
+#                         y_acumulado += alto_t + 12 
+                    
+#                     nuevo_cliente.tarjeta_x = X_PANEL + 10
+#                     nuevo_cliente.tarjeta_y = y_acumulado
+#                     cola_clientes.append(nuevo_cliente)
+
+
+#                     if estacion_actual == "CORTE" and evento.key == pygame.K_SPACE:
+#                        if len(ingredientes_sushi_actual) > 0:
+#                         comida_lista = set(ingredientes_sushi_actual)
+#                         cliente_atendido = None
+                        
+#                         # Buscar si el pedido coincide con algún cliente esperando
+#                         for c in cola_clientes:
+#                             if c.estado == "esperando" and c.pedido == comida_lista:
+#                                 cliente_atendido = c
+#                                 break
+                        
+#                         if cliente_atendido:
+#                             print(f"¡Pedido entregado con éxito a {cliente_atendido.nombre}!")
+#                             cola_clientes.remove(cliente_atendido)
+#                         else:
+#                             print("Ningún cliente pidió esta combinación. ¡Sushi tirado!")
+                        
+#                         # Reacomodar la cola visual de los clientes que se quedaron
+#                         for i, c_restante in enumerate(cola_clientes):
+#                             c_restante.posicion_destino = X_MOSTRADOR + (i * DISTANCIA_ENTRE_CLIENTES)
+#                             c_restante.tarjeta_y = Y_PANEL + 45 + (i * 95)
+                            
+#                         # Reiniciar la bandeja de preparación
+#                         ingredientes_sushi_actual = []
+#                         bebida_actual = "Ninguna"
+
+#         # Eliminar clientes impacientes
+#         for cliente in cola_clientes[:]:
+#             if cliente.estado == "enojado":
+#                 cola_clientes.remove(cliente)
+#                 for i, c_restante in enumerate(cola_clientes):
+#                     c_restante.posicion_destino = X_MOSTRADOR + (i * DISTANCIA_ENTRE_CLIENTES)
+
+#         pygame.display.update()
+#         reloj.tick(60)
